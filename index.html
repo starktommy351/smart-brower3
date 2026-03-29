@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Search Browser</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  min-height: 100vh;
+  color: white;
+}
+.top-bar {
+  background: rgba(255,255,255,0.08);
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0,255,136,0.2);
+}
+.logo { font-size: 1.2em; font-weight: bold; color: #00ff88; white-space: nowrap; }
+.url-bar { flex:1; display:flex; gap:8px; }
+.url-input {
+  flex:1; padding:9px 15px;
+  border-radius:25px;
+  border:2px solid #00ff88;
+  background:rgba(255,255,255,0.1);
+  color:white; font-size:14px; outline:none;
+}
+.url-input::placeholder { color:rgba(255,255,255,0.4); }
+.go-btn {
+  padding:9px 20px;
+  background:#00ff88; color:#000;
+  border:none; border-radius:25px;
+  font-weight:bold; cursor:pointer; font-size:14px;
+}
+.hero {
+  text-align: center;
+  padding: 50px 20px 30px;
+}
+.hero h1 { font-size: 2em; color: #00ff88; margin-bottom: 10px; }
+.hero p { color: rgba(255,255,255,0.6); margin-bottom: 30px; }
+.main-search {
+  display: flex;
+  max-width: 600px;
+  margin: 0 auto;
+  gap: 10px;
+}
+.main-input {
+  flex:1; padding:15px 20px;
+  border-radius:30px;
+  border:2px solid #00ff88;
+  background:rgba(255,255,255,0.1);
+  color:white; font-size:16px; outline:none;
+}
+.main-input::placeholder { color:rgba(255,255,255,0.4); }
+.search-btn {
+  padding:15px 25px;
+  background:#00ff88; color:#000;
+  border:none; border-radius:30px;
+  font-weight:bold; cursor:pointer; font-size:15px;
+}
+.categories {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 25px 20px;
+}
+.cat-btn {
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(0,255,136,0.4);
+  background: rgba(255,255,255,0.08);
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+.cat-btn:hover, .cat-btn.active {
+  background: #00ff88;
+  color: #000;
+  font-weight: bold;
+}
+.quick-links {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px 30px;
+}
+.quick-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 12px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.quick-card:hover {
+  background: rgba(0,255,136,0.15);
+  border-color: #00ff88;
+}
+.card-icon { font-size: 1.8em; }
+.card-info {}
+.card-title { font-weight: bold; font-size: 14px; }
+.card-desc { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 3px; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="logo">🔍 MyBrowser</div>
+  <div class="url-bar">
+    <input class="url-input" id="topSearch" type="text"
+      placeholder="সার্চ করুন বা URL দিন..."
+      onkeypress="if(event.key==='Enter') topGo()"/>
+    <button class="go-btn" onclick="topGo()">যাও</button>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>🌐 আপনার ব্রাউজার</h1>
+  <p>যেকোনো কিছু খুঁজুন — ডকুমেন্ট, PDF, তথ্য সব পাবেন</p>
+  <div class="main-search">
+    <input class="main-input" id="mainSearch" type="text"
+      placeholder="কী খুঁজছেন লিখুন..."
+      onkeypress="if(event.key==='Enter') doSearch()"/>
+    <button class="search-btn" onclick="doSearch()">🔍 খুঁজুন</button>
+  </div>
+</div>
+
+<div class="categories">
+  <button class="cat-btn active" onclick="setEngine('google', this)">🔍 Google</button>
+  <button class="cat-btn" onclick="setEngine('youtube', this)">▶️ YouTube</button>
+  <button class="cat-btn" onclick="setEngine('pdf', this)">📄 PDF খুঁজুন</button>
+  <button class="cat-btn" onclick="setEngine('wiki', this)">📖 Wikipedia</button>
+  <button class="cat-btn" onclick="setEngine('bangla', this)">🇧🇩 বাংলা</button>
+  <button class="cat-btn" onclick="setEngine('scholar', this)">🎓 Research</button>
+</div>
+
+<div class="quick-links">
+  <a class="quick-card" href="https://drive.google.com" target="_blank">
+    <div class="card-icon">📁</div>
+    <div class="card-info">
+      <div class="card-title">Google Drive</div>
+      <div class="card-desc">আপনার ডকুমেন্ট দেখুন</div>
+    </div>
+  </a>
+  <a class="quick-card" href="https://docs.google.com" target="_blank">
+    <div class="card-icon">📝</div>
+    <div class="card-info">
+      <div class="card-title">Google Docs</div>
+      <div class="card-desc">ডকুমেন্ট তৈরি করুন</div>
+    </div>
+  </a>
+  <a class="quick-card" href="https://translate.google.com" target="_blank">
+    <div class="card-icon">🌍</div>
+    <div class="card-info">
+      <div class="card-title">Translate</div>
+      <div class="card-desc">যেকোনো ভাষায় অনুবাদ</div>
+    </div>
+  </a>
+  <a class="quick-card" href="https://www.wikipedia.org" target="_blank">
+    <div class="card-icon">📖</div>
+    <div class="card-info">
+      <div class="card-title">Wikipedia</div>
+      <div class="card-desc">বিশ্বকোষ থেকে জানুন</div>
+    </div>
+  </a>
+  <a class="quick-card" href="https://scholar.google.com" target="_blank">
+    <div class="card-icon">🎓</div>
+    <div class="card-info">
+      <div class="card-title">Google Scholar</div>
+      <div class="card-desc">Research Paper খুঁজুন</div>
+    </div>
+  </a>
+  <a class="quick-card" href="https://www.youtube.com" target="_blank">
+    <div class="card-icon">▶️</div>
+    <div class="card-info">
+      <div class="card-title">YouTube</div>
+      <div class="card-desc">ভিডিও দেখুন</div>
+    </div>
+  </a>
+</div>
+
+<script>
+let engine = 'google';
+
+const engines = {
+  google: q => `https://www.google.com/search?q=${q}`,
+  youtube: q => `https://www.youtube.com/results?search_query=${q}`,
+  pdf: q => `https://www.google.com/search?q=${q}+filetype:pdf`,
+  wiki: q => `https://bn.wikipedia.org/w/index.php?search=${q}`,
+  bangla: q => `https://www.google.com/search?q=${q}&lr=lang_bn`,
+  scholar: q => `https://scholar.google.com/scholar?q=${q}`
+};
+
+function setEngine(e, btn) {
+  engine = e;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function doSearch() {
+  const q = document.getElementById('mainSearch').value.trim();
+  if (!q) return;
+  window.open(engines[engine](encodeURIComponent(q)), '_blank');
+}
+
+function topGo() {
+  let val = document.getElementById('topSearch').value.trim();
+  if (!val) return;
+  if (val.includes('.') && !val.includes(' ')) {
+    if (!val.startsWith('http')) val = 'https://' + val;
+    window.open(val, '_blank');
+  } else {
+    window.open(engines.google(encodeURIComponent(val)), '_blank');
+  }
+}
+</script>
+
+</body>
+</html>
